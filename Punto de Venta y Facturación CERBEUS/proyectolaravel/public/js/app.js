@@ -25712,7 +25712,7 @@ function lifecycleMixin (Vue) {
     activeInstance = vm;
     vm._vnode = vnode;
     // Vue.prototype.__patch__ is injected in entry points
-    // based on the rendering CERBEUS used.
+    // based on the rendering backend used.
     if (!prevVnode) {
       // initial render
       vm.$el = vm.__patch__(
@@ -28535,12 +28535,12 @@ function createKeyToOldIdx (children, beginIdx, endIdx) {
   return map
 }
 
-function createPatchFunction (CERBEUS) {
+function createPatchFunction (backend) {
   var i, j;
   var cbs = {};
 
-  var modules = CERBEUS.modules;
-  var nodeOps = CERBEUS.nodeOps;
+  var modules = backend.modules;
+  var nodeOps = backend.nodeOps;
 
   for (i = 0; i < hooks.length; ++i) {
     cbs[hooks[i]] = [];
@@ -35455,7 +35455,7 @@ var staticRenderFns = [
     return _c("ol", { staticClass: "breadcrumb" }, [
       _c("li", { staticClass: "breadcrumb-item active" }, [
         _c("a", { attrs: { href: "/" } }, [
-          _vm._v("CERBEUS - Inicio")
+          _vm._v("BACKEND - SISTEMA DE COMPRAS - VENTAS")
         ])
       ])
     ])
@@ -39652,7 +39652,7 @@ var staticRenderFns = [
     return _c("ol", { staticClass: "breadcrumb" }, [
       _c("li", { staticClass: "breadcrumb-item active" }, [
         _c("a", { attrs: { href: "/" } }, [
-          _vm._v("CERBEUS - Inicio")
+          _vm._v("BACKEND - SISTEMA DE COMPRAS - VENTAS")
         ])
       ])
     ])
@@ -40897,9 +40897,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("ol", { staticClass: "breadcrumb" }, [
       _c("li", { staticClass: "breadcrumb-item active" }, [
-        _c("a", { attrs: { href: "/" } }, [
-          _vm._v("CERBEUS - Inicio")
-        ])
+        _c("a", { attrs: { href: "/" } }, [_vm._v("CERBEUS - Inicio")])
       ])
     ])
   },
@@ -42133,9 +42131,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("ol", { staticClass: "breadcrumb" }, [
       _c("li", { staticClass: "breadcrumb-item active" }, [
-        _c("a", { attrs: { href: "/" } }, [
-          _vm._v("CERBEUS - Inicio")
-        ])
+        _c("a", { attrs: { href: "/" } }, [_vm._v("CERBEUS - Inicio")])
       ])
     ])
   },
@@ -42717,9 +42713,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("ol", { staticClass: "breadcrumb" }, [
       _c("li", { staticClass: "breadcrumb-item active" }, [
-        _c("a", { attrs: { href: "/" } }, [
-          _vm._v("CERBEUS - Inicio")
-        ])
+        _c("a", { attrs: { href: "/" } }, [_vm._v("CERBEUS - Inicio")])
       ])
     ])
   },
@@ -44404,9 +44398,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("ol", { staticClass: "breadcrumb" }, [
       _c("li", { staticClass: "breadcrumb-item active" }, [
-        _c("a", { attrs: { href: "/" } }, [
-          _vm._v("CERBEUS - Inicio")
-        ])
+        _c("a", { attrs: { href: "/" } }, [_vm._v("CERBEUS - Inicio")])
       ])
     ])
   },
@@ -46370,7 +46362,7 @@ var render = function() {
                                       _c("td", [
                                         _c("strong", [
                                           _vm._v(
-                                            " USD$ " +
+                                            " LPS " +
                                               _vm._s(
                                                 (_vm.subTotal = (
                                                   _vm.total -
@@ -46396,7 +46388,7 @@ var render = function() {
                                       _c("td", [
                                         _c("strong", [
                                           _vm._v(
-                                            "USD$ " +
+                                            "LPS " +
                                               _vm._s(
                                                 (_vm.subTotalImpuesto = (
                                                   (_vm.total * _vm.impuesto) /
@@ -46422,7 +46414,7 @@ var render = function() {
                                       _c("td", [
                                         _c("strong", [
                                           _vm._v(
-                                            "USD$ " +
+                                            "LPS " +
                                               _vm._s(
                                                 (_vm.total = _vm.calcularTotal)
                                               )
@@ -46591,7 +46583,7 @@ var render = function() {
                                       _c("td", [
                                         _c("strong", [
                                           _vm._v(
-                                            "USD$ " +
+                                            "LPS " +
                                               _vm._s(
                                                 (_vm.subTotal = (
                                                   _vm.total -
@@ -46617,7 +46609,7 @@ var render = function() {
                                       _c("td", [
                                         _c("strong", [
                                           _vm._v(
-                                            "USD$ " +
+                                            "LPS " +
                                               _vm._s(
                                                 (_vm.subTotalImpuesto = (
                                                   _vm.total * _vm.impuesto
@@ -46641,7 +46633,7 @@ var render = function() {
                                       _vm._v(" "),
                                       _c("td", [
                                         _c("strong", [
-                                          _vm._v("USD$ " + _vm._s(_vm.total))
+                                          _vm._v("LPS " + _vm._s(_vm.total))
                                         ])
                                       ])
                                     ]
@@ -47006,9 +46998,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("ol", { staticClass: "breadcrumb" }, [
       _c("li", { staticClass: "breadcrumb-item active" }, [
-        _c("a", { attrs: { href: "/" } }, [
-          _vm._v("CERBEUS - Inicio")
-        ])
+        _c("a", { attrs: { href: "/" } }, [_vm._v("CERBEUS - Inicio")])
       ])
     ])
   },
@@ -47030,7 +47020,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Comprador")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Total (USD$)")]),
+        _c("th", [_vm._v("Total (LPS)")]),
         _vm._v(" "),
         _c("th", [_vm._v("Impuesto")]),
         _vm._v(" "),
@@ -47103,11 +47093,11 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Producto")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Precio (USD$)")]),
+        _c("th", [_vm._v("Precio (LPS)")]),
         _vm._v(" "),
         _c("th", [_vm._v("Cantidad")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Total (USD$)")])
+        _c("th", [_vm._v("Total (LPS)")])
       ])
     ])
   },
@@ -47187,11 +47177,11 @@ var staticRenderFns = [
       _c("tr", { staticClass: "bg-success" }, [
         _c("th", [_vm._v("Producto")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Precio (USD$)")]),
+        _c("th", [_vm._v("Precio (LPS)")]),
         _vm._v(" "),
         _c("th", [_vm._v("Cantidad")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Total (USD$)")])
+        _c("th", [_vm._v("Total (LPS)")])
       ])
     ])
   },
@@ -47243,7 +47233,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Codigo")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Precio Venta (USD$)")]),
+        _c("th", [_vm._v("Precio Venta (LPS)")]),
         _vm._v(" "),
         _c("th", [_vm._v("Stock")]),
         _vm._v(" "),
@@ -49338,7 +49328,7 @@ var render = function() {
                                       _c("td", [
                                         _c("strong", [
                                           _vm._v(
-                                            " USD$ " +
+                                            " LPS " +
                                               _vm._s(
                                                 (_vm.subTotal = (
                                                   _vm.total -
@@ -49364,7 +49354,7 @@ var render = function() {
                                       _c("td", [
                                         _c("strong", [
                                           _vm._v(
-                                            "USD$ " +
+                                            "LPS " +
                                               _vm._s(
                                                 (_vm.subTotalImpuesto = (
                                                   (_vm.total * _vm.impuesto) /
@@ -49390,7 +49380,7 @@ var render = function() {
                                       _c("td", [
                                         _c("strong", [
                                           _vm._v(
-                                            "USD$ " +
+                                            "LPS " +
                                               _vm._s(
                                                 (_vm.total = _vm.calcularTotal)
                                               )
@@ -49567,7 +49557,7 @@ var render = function() {
                                       _c("td", [
                                         _c("strong", [
                                           _vm._v(
-                                            "USD$ " +
+                                            "LPS " +
                                               _vm._s(
                                                 (_vm.subTotal = (
                                                   _vm.total -
@@ -49593,7 +49583,7 @@ var render = function() {
                                       _c("td", [
                                         _c("strong", [
                                           _vm._v(
-                                            "USD$ " +
+                                            "LPS " +
                                               _vm._s(
                                                 (_vm.subTotalImpuesto = (
                                                   _vm.total * _vm.impuesto
@@ -49617,7 +49607,7 @@ var render = function() {
                                       _vm._v(" "),
                                       _c("td", [
                                         _c("strong", [
-                                          _vm._v("USD$ " + _vm._s(_vm.total))
+                                          _vm._v("LPS " + _vm._s(_vm.total))
                                         ])
                                       ])
                                     ]
@@ -49982,9 +49972,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("ol", { staticClass: "breadcrumb" }, [
       _c("li", { staticClass: "breadcrumb-item active" }, [
-        _c("a", { attrs: { href: "/" } }, [
-          _vm._v("CERBEUS - Inicio")
-        ])
+        _c("a", { attrs: { href: "/" } }, [_vm._v("CERBEUS - Inicio")])
       ])
     ])
   },
@@ -50006,7 +49994,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Vendedor")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Total (USD$)")]),
+        _c("th", [_vm._v("Total (LPS)")]),
         _vm._v(" "),
         _c("th", [_vm._v("Impuesto")]),
         _vm._v(" "),
@@ -50079,13 +50067,13 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Producto")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Precio (USD$)")]),
+        _c("th", [_vm._v("Precio (LPS)")]),
         _vm._v(" "),
         _c("th", [_vm._v("Cantidad")]),
         _vm._v(" "),
         _c("th", [_vm._v("Descuento")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Total (USD$)")])
+        _c("th", [_vm._v("Total (LPS)")])
       ])
     ])
   },
@@ -50165,13 +50153,13 @@ var staticRenderFns = [
       _c("tr", { staticClass: "bg-success" }, [
         _c("th", [_vm._v("Producto")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Precio (USD$)")]),
+        _c("th", [_vm._v("Precio (LPS)")]),
         _vm._v(" "),
         _c("th", [_vm._v("Cantidad")]),
         _vm._v(" "),
         _c("th", [_vm._v("Descuento")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Total (USD$)")])
+        _c("th", [_vm._v("Total (LPS)")])
       ])
     ])
   },
@@ -50223,7 +50211,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Codigo")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Precio Venta (USD$)")]),
+        _c("th", [_vm._v("Precio Venta (LPS)")]),
         _vm._v(" "),
         _c("th", [_vm._v("Stock")]),
         _vm._v(" "),
@@ -50482,7 +50470,7 @@ var staticRenderFns = [
       _c("ol", { staticClass: "breadcrumb" }, [
         _c("li", { staticClass: "breadcrumb-item" }, [
           _c("a", { attrs: { href: "/" } }, [
-            _vm._v("CERBEUS - PUNTO DE VENTA Y FACTURACIÓN")
+            _vm._v("CERBEUS - PUNTO DE VENTA Y FACTURACIÓN FACTURACIÓN")
           ])
         ])
       ]),

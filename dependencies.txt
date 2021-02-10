@@ -1,0 +1,9 @@
+https://drive.google.com/drive/folders/19p1MSkJWQdlOfKL_tbEU7eHYLsUgEF7g
+
+omposer global require laravel/installer
+npm install
+npm run dev
+php artisan migrate
+
+php artisan migrate
+php artisan serve
