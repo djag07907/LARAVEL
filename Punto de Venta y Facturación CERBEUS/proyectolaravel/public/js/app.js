@@ -35455,7 +35455,7 @@ var staticRenderFns = [
     return _c("ol", { staticClass: "breadcrumb" }, [
       _c("li", { staticClass: "breadcrumb-item active" }, [
         _c("a", { attrs: { href: "/" } }, [
-          _vm._v("BACKEND - SISTEMA DE COMPRAS - VENTAS")
+          _vm._v("CERBEUS - PUNTO DE VENTA Y FACTURACIÓN")
         ])
       ])
     ])
@@ -39652,7 +39652,7 @@ var staticRenderFns = [
     return _c("ol", { staticClass: "breadcrumb" }, [
       _c("li", { staticClass: "breadcrumb-item active" }, [
         _c("a", { attrs: { href: "/" } }, [
-          _vm._v("BACKEND - SISTEMA DE COMPRAS - VENTAS")
+          _vm._v("CERBEUS - PUNTO DE VENTA Y FACTURACIÓN")
         ])
       ])
     ])
@@ -50470,7 +50470,7 @@ var staticRenderFns = [
       _c("ol", { staticClass: "breadcrumb" }, [
         _c("li", { staticClass: "breadcrumb-item" }, [
           _c("a", { attrs: { href: "/" } }, [
-            _vm._v("CERBEUS - PUNTO DE VENTA Y FACTURACIÓN FACTURACIÓN")
+            _vm._v("CERBEUS - PUNTO DE VENTA Y FACTURACIÓN")
           ])
         ])
       ]),

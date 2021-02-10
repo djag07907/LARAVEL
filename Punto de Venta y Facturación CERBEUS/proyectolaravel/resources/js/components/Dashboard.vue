@@ -2,7 +2,7 @@
 <main class="main">
     <!-- Breadcrumb -->
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">CERBEUS - PUNTO DE VENTA Y FACTURACIÓN FACTURACIÓN</a></li>
+        <li class="breadcrumb-item"><a href="/">CERBEUS - PUNTO DE VENTA Y FACTURACIÓN</a></li>
     </ol>
 
     <div class="container-fluid">
