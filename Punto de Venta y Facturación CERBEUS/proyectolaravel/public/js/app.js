@@ -2464,6 +2464,11 @@ window.Vue = __webpack_require__(65);
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
 
+// IMPORT ELEMENT
+// import ElementUI from 'element-ui';
+// import 'element-ui/lib/theme-chalk/index.css';
+
+// Vue.use(ElementUI);
 
 Vue.component('categoria', __webpack_require__(68));
 Vue.component('producto', __webpack_require__(74));
@@ -2474,6 +2479,9 @@ Vue.component('user', __webpack_require__(130));
 Vue.component('compra', __webpack_require__(135));
 Vue.component('venta', __webpack_require__(140));
 Vue.component('dashboard', __webpack_require__(145));
+
+// NEW ELEMENTUI COMPONENTS
+// Vue.component('categoriaForm', require('./components/categoriaForm.vue'));
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -34410,6 +34418,14 @@ module.exports = function listToStyles (parentId, list) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //

@@ -128,6 +128,14 @@
                             
                             </div>
                              
+                             
+                        <!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+
+                        <el-form-item label="Activity name" prop="name">
+                            <el-input v-model="ruleForm.name"></el-input>
+                        </el-form-item>
+
+                        </el-form> -->
 
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 <div class="form-group row">

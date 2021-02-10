@@ -20,6 +20,11 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
 
+// IMPORT ELEMENT
+// import ElementUI from 'element-ui';
+// import 'element-ui/lib/theme-chalk/index.css';
+
+// Vue.use(ElementUI);
 
 Vue.component('categoria', require('./components/Categoria.vue'));
 Vue.component('producto', require('./components/Producto.vue'));
@@ -30,6 +35,9 @@ Vue.component('user', require('./components/User.vue'));
 Vue.component('compra', require('./components/Compra.vue'));
 Vue.component('venta', require('./components/Venta.vue'));
 Vue.component('dashboard', require('./components/Dashboard.vue'));
+
+// NEW ELEMENTUI COMPONENTS
+// Vue.component('categoriaForm', require('./components/categoriaForm.vue'));
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
