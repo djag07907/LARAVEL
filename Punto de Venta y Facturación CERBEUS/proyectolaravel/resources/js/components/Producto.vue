@@ -183,8 +183,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Producto</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del producto">
-                                       
+                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del producto" name="nombre">
                                     </div>
                                 </div>
 

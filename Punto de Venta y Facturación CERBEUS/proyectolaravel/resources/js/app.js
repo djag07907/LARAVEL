@@ -24,6 +24,14 @@ window.Vue = require('vue');
 // import ElementUI from 'element-ui';
 // import 'element-ui/lib/theme-chalk/index.css';
 
+import Vue from 'vue';
+import es from 'vee-validate/dist/locale/es';
+import VeeValidate, { Validator } from 'vee-validate';
+
+Vue.use(VeeValidate);
+
+Validator.localize("es", es);
+
 // Vue.use(ElementUI);
 
 Vue.component('categoria', require('./components/Categoria.vue'));

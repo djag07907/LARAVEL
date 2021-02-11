@@ -115,52 +115,34 @@
                               <span aria-hidden="true">×</span>
                             </button>
                         </div>
-                       
-                        <div class="modal-body">
-                            
-                            <div v-show="errorCategoria" class="form-group row div-error">
-                                
-                                <div class="text-center text-error">
-                                    
+                        <div class="modal-body">                            
+                            <div v-show="errorCategoria" class="form-group row div-error">                                
+                                <div class="text-center text-error">                                    
                                     <div v-for="error in errorMostrarMsjCategoria" :key="error" v-text="error"></div>
-
                                 </div>
-                            
                             </div>
-                             
-                             
-                        <!-- <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-
-                        <el-form-item label="Activity name" prop="name">
-                            <el-input v-model="ruleForm.name"></el-input>
-                        </el-form-item>
-
-                        </el-form> -->
-
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal" @submit.prevent="onSubmit">
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Categoría</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de categoría" >
-                                       
+                                        <input type="text" v-validate.initial="'required|alpha_spaces|min:2'" v-model="nombre" class="form-control" placeholder="Nombre de categoría" name="Nombre">
+                                        <span>{{ errors.first('Nombre') }}</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="email-input">Descripción</label>
                                     <div class="col-md-9">
-                                        <input type="email" v-model="descripcion" class="form-control" placeholder="Ingrese descripcion">
+                                        <input type="text" v-validate.initial="'required|alpha_spaces'" v-model="descripcion" class="form-control" placeholder="Ingrese descripcion" name="Descripcion">
+                                        <span>{{ errors.first('Descripcion') }}</span>   
                                     </div>
                                 </div>
-
-
-                            </form>
+                            </form>  
                         </div>
                         <div class="modal-footer">
                             <button type="button" @click="cerrarModal()" class="btn btn-danger"><i class="fa fa-times fa-2x"></i> Cerrar</button>
-                            <button type="button" @click="registrarCategoria()" v-if="tipoAccion==1" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Guardar</button>
-                            <button type="button" @click="actualizarCategoria()" v-if="tipoAccion==2" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Actualizar</button>
-                           
-                        </div>
+                            <button type="button" :disabled="errors.any()" @click="registrarCategoria()" v-if="tipoAccion==1" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Guardar</button>
+                            <button type="button" :disabled="errors.any()" @click="actualizarCategoria()" v-if="tipoAccion==2" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Actualizar</button>  
+                        </div>  
                     </div>
                     <!-- /.modal-content -->
                 </div>
@@ -173,8 +155,15 @@
 </template>
 
 <script>
-   
+
+    import { ValidationProvider } from 'vee-validate';
+
     export default {
+
+        components: {
+            ValidationProvider
+        },
+
         data(){
 
             return {
