@@ -13,8 +13,14 @@
 
                        <h2>Listado de Compras</h2><br/>
                       
-                        <button class="btn btn-primary btn-lg" type="button" @click="mostrarDetalle()">
+                        <button  type="button" class="btn btn-success btn-lg" @click="mostrarDetalle()">
                             <i class="fa fa-plus fa-2x"></i>&nbsp;&nbsp;Nueva Compra
+                        </button>
+                         <button class="btn btn-primary btn-lg" type="button" @click="cargarPdf();">
+                            <i class="fa fa-file-pdf-o fa-2x"></i>&nbsp;&nbsp;Reporte PDF
+                        </button>
+                        <button class="btn btn-primary btn-lg" type="button" @click="cargarExcel()">
+                            <i class="fa fa-file-excel-o fa-2x"></i>&nbsp;&nbsp;Reporte Excel
                         </button>
                     </div>
                     <!--listado-->
@@ -44,7 +50,7 @@
                                         <th>Tipo de identificación</th>
                                         <th>Comprador</th>  
                                         <th>Total (LPS)</th>
-                                        <th>Impuesto</th>
+                                        <!-- <th>Impuesto</th> -->
                                         <th>Estado</th>
                                         <th>Cambiar estado</th>
                                         <th>Descargar Reporte</th>
@@ -67,7 +73,7 @@
                                         <td v-text="compra.tipo_identificacion"></td> 
                                         <td v-text="compra.usuario"></td> 
                                         <td v-text="compra.total"></td>
-                                        <td v-text="compra.impuesto"></td>
+                                        <!-- <td v-text="compra.impuesto"></td> -->
                                         <td>
 
                                              <button type="button" v-if="compra.estado=='Registrado'" class="btn btn-success btn-sm">
@@ -141,7 +147,8 @@
                              <div class="col-md-8">
                                 <div class="form-group">
                                     <label class="text-uppercase"><strong>Número Compra(*)</strong></label>
-                                    <input type="text" class="form-control" v-model="num_compra" placeholder="">
+                                    <input type="text" v-validate.initial="'required|alpha_num'" maxlength="10" class="form-control" v-model="num_compra" placeholder="CMP0001" name="Número Compra">
+                                    <span style="color:red">{{ errors.first('Número Compra')}}</span>
                                 </div>
                             </div>
 
@@ -155,7 +162,6 @@
                                         placeholder="Buscar Proveedores..."
                                         :onChange="getDatosProveedor"                                        
                                     >
-
                                     </v-select>
                                 </div>
                             </div>
@@ -172,10 +178,10 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-8">
+                            <!-- <div class="col-md-8">
                                 <label class="text-uppercase"><strong>Impuesto(*)</strong></label>
-                                <input type="text" class="form-control" v-model="impuesto">
-                            </div>
+                                <input type="text"  class="form-control" v-model="impuesto">
+                            </div> -->
                             
                                  
                         </div>
@@ -199,31 +205,33 @@
                         <div class="form-group row border">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Producto <span class="text-error" v-show="idproducto==0">(*Ingrese código del producto)</span></label>
+                                    <!-- <label>Producto <span class="text-error" v-show="idproducto==0">(*Ingrese código del producto)</span></label> -->
                                     <div class="form-inline">
-                                        <input type="text" class="form-control" v-model="codigo" @keyup.enter="buscarProducto()" placeholder="Ingrese código">
+                                        <input type="hidden" class="form-control" v-model="codigo" @keyup.enter="buscarProducto()" placeholder="Ingrese código">
                                         <button @click="abrirModal()" class="btn btn-primary">
                                            
                                            <i class="fa fa-plus"></i>&nbsp;Agregar Productos
 
                                         </button>
-                                        <input type="text" readonly class="form-control" v-model="producto">
+                                        <input type="hidden" readonly class="form-control" v-model="producto">
                                     </div>                                    
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <!-- <div class="col-md-2">
                                 <div class="form-group">
                                     <label>Precio <span class="text-error" v-show="precio==0">(*Ingrese un valor)</span></label>
-                                    <input type="number" value="0" step="any" class="form-control" v-model="precio">
+                                    <input type="number"  v-validate.initial="'required|double'" value="0" step="any" class="form-control" v-model="precio" name="Precio">
+                                    <span style="color:red" >{{ errors.first('Precio')}}</span>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label>Cantidad <span class="text-error" v-show="cantidad==0">(*Ingrese un valor)</span></label>
-                                    <input type="number" value="0" class="form-control" v-model="cantidad">
+                                    <input type="number"  v-validate.initial="'required|double'" value="0" class="form-control" v-model="cantidad" name="Cantidad">
+                                    <span style="color:red">{{ errors.first('Cantidad')}}</span>
                                 </div>
-                            </div>
-                            <div class="col-md-2">
+                            </div> -->
+                            <div class="col-md-2"  style="display: none">
                                 <div class="form-group">
                                     <button @click="agregarDetalle()" class="btn btn-primary form-control btnagregar"><i class="fa fa-plus fa-2x"></i> Agregar detalle</button>
                                 </div>
@@ -266,14 +274,14 @@
                                                 {{detalle.precio*detalle.cantidad}}
                                             </td>
                                         </tr>
-                                        <tr style="background-color: grey;">
+                                        <!-- <tr style="background-color: grey;">
                                             <td colspan="4" align="right"><strong>Sub-Total:</strong></td>
                                             <td><strong> LPS {{subTotal=(total-subTotalImpuesto).toFixed(2)}}</strong></td>
                                         </tr>
                                         <tr style="background-color: grey;">
                                             <td colspan="4" align="right"><strong>Impuesto:</strong></td>
                                             <td><strong>LPS {{subTotalImpuesto=((total*impuesto)/(1+impuesto)).toFixed(2)}}</strong></td>
-                                        </tr>
+                                        </tr> -->
                                         <tr style="background-color: grey;">
                                             <td colspan="4" align="right"><strong>Total:</strong></td>
                                             <td><strong>LPS {{total=calcularTotal}}</strong></td>
@@ -292,7 +300,7 @@
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <button type="button" class="btn btn-danger" @click="ocultarDetalle()"><i class="fa fa-times fa-2x"></i> Cerrar</button>
-                                <button type="button" class="btn btn-success" @click="registrarCompra()"><i class="fa fa-save fa-2x"></i> Registrar Compra</button>
+                                <button type="button" class="btn btn-success"  @click="registrarCompra()"><i class="fa fa-save fa-2x"></i> Registrar Compra</button>
                             </div>
                         </div>
                     </div>
@@ -329,12 +337,12 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-3">
+                                <!-- <div class="col-md-3">
                                      <div class="form-group">
                                         <label class="text-uppercase"><strong>Impuesto</strong></label>
                                         <p v-text="impuesto"></p>
                                     </div>
-                                </div>
+                                </div> -->
 
                         </div>
 
@@ -362,14 +370,14 @@
                                             {{detalle.precio*detalle.cantidad}}
                                         </td>
                                     </tr>
-                                    <tr style="background-color: grey;">
+                                    <!-- <tr style="background-color: grey;">
                                         <td colspan="3" align="right"><strong>Sub-Total:</strong></td>
                                         <td><strong>LPS {{subTotal=(total-subTotalImpuesto).toFixed(2)}}</strong></td>
                                     </tr>
                                     <tr style="background-color: grey;">
                                         <td colspan="3" align="right"><strong>Impuesto:</strong></td>
                                         <td><strong>LPS {{subTotalImpuesto=((total*impuesto)).toFixed(2)}}</strong></td>
-                                    </tr>
+                                    </tr> -->
                                     <tr style="background-color: grey;">
                                         <td colspan="3" align="right"><strong>Total:</strong></td>
                                         <td><strong>LPS {{total}}</strong></td>
@@ -505,6 +513,8 @@
 <script>
 
    import vSelect from 'vue-select';
+   import {CalcularTotal} from '../compra.util';
+
    
     export default {
         data(){
@@ -517,7 +527,7 @@
                 nombre : '',
                 tipo_identificacion : 'FACTURA',
                 num_compra : '',
-                impuesto: 0.20,
+                impuesto: 0.15,
                 total:0.0,
                 subTotalImpuesto: 0.0,
                 subTotal: 0.0,
@@ -599,12 +609,13 @@
             },
 
             calcularTotal: function(){
-                var resultado=0.0;
-                for(var i=0;i<this.arrayDetalle.length;i++){
-                    resultado=resultado+(this.arrayDetalle[i].precio*this.arrayDetalle[i].cantidad)
-                }
-                return resultado;
-            }
+                // var resultado=0.0;
+                // for(var i=0;i<this.arrayDetalle.length;i++){
+                //     resultado=resultado+(this.arrayDetalle[i].precio*this.arrayDetalle[i].cantidad)
+                // }
+                // return resultado;
+                return CalcularTotal(this.arrayDetalle);
+            },
 
         },
 
@@ -677,6 +688,18 @@
               
                  window.open('http://127.0.0.1:8000/compra/pdf/'+ id + ',' + '_blank');
  
+            },
+            
+            cargarPdf(){
+               
+               window.open('http://127.0.0.1:8000/compra/listarPdf','_blank');
+
+            },
+
+            cargarExcel(){
+               
+               window.open('http://127.0.0.1:8000/compra/listarExcel','_blank');
+
             },
 
 
@@ -787,7 +810,7 @@
                     'idproveedor': this.idproveedor,
                     'tipo_identificacion': this.tipo_identificacion,
                     'num_compra' : this.num_compra,
-                    'impuesto' : this.impuesto,
+                    // 'impuesto' : this.impuesto,
                     'total' : this.total,
                     'data': this.arrayDetalle
 
@@ -797,7 +820,7 @@
                     me.idproveedor=0;
                     me.tipo_identificacion='FACTURA';
                     me.num_compra='';
-                    me.impuesto=0.20;
+                    // me.impuesto=0.15;
                     me.total=0.0;
                     me.idproducto=0;
                     me.producto='';
@@ -820,7 +843,7 @@
                 if (this.idproveedor==0) this.errorMostrarMsjCompra.push("Seleccione un Proveedor");
                 if (this.tipo_identificacion==0) this.errorMostrarMsjCompra.push("Seleccione la identificación");
                 if (!this.num_compra) this.errorMostrarMsjCompra.push("Ingrese el número de compra");
-                if (!this.impuesto) this.errorMostrarMsjCompra.push("Ingrese el impuesto de compra");
+                // if (!this.impuesto) this.errorMostrarMsjCompra.push("Ingrese el impuesto de compra");
                 if (this.arrayDetalle.length<=0) this.errorMostrarMsjCompra.push("Ingrese detalles");
 
                 if (this.errorMostrarMsjCompra.length) this.errorCompra = 1;
@@ -836,7 +859,7 @@
                     me.idproveedor=0;
                     me.tipo_identificacion='FACTURA';
                     me.num_compra='';
-                    me.impuesto=0.20;
+                    // me.impuesto=0.15;
                     me.total=0.0;
                     me.idproducto=0;
                     me.producto='';
@@ -865,7 +888,7 @@
                     me.proveedor = arrayCompraT[0]['nombre'];
                     me.tipo_identificacion=arrayCompraT[0]['tipo_identificacion'];
                     me.num_compra=arrayCompraT[0]['num_compra'];
-                    me.impuesto=arrayCompraT[0]['impuesto'];
+                    // me.impuesto=arrayCompraT[0]['impuesto'];
                     me.total=arrayCompraT[0]['total'];
                 })
                 .catch(function (error) {

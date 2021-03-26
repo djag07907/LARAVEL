@@ -78,20 +78,35 @@
         .derecha{
             float:right;
         }
+        #footer {
+            bottom: 0;
+            border-top: 0.1pt solid #aaa;
+            }
+            .page-number:before {
+            content: "Pagina: " counter(page);
+            }
     </style>
 </head>
 <body>
+<div id="logo">
+                <img src="../resources/img/cerbeus_com.png" alt="" id="imagen" width="100" height="100">
+            </div> 
     <div>
-        <h3>Lista de Productos <span class="derecha">{{now()}}</span></h3>
+        <h3>Lista de Productos <span class="derecha">{{date('d-m-Y H:i:s')}}</span></h3>
     </div>
+    <div id="footer">
+            <div class="page-number"></div>
+        </div>
     <div>
         <table class="table table-bordered table-striped table-sm">
             <thead>
                 <tr> 
                     <th>Categoría</th>
+                    <th>Marca</th>
                     <th>Producto</th>
                     <th>Código</th>
                     <th>Precio Venta (LPS)</th>
+                    <th>Impuesto</th>
                     <th>Stock</th>
                     <th>Estado</th>
                 </tr>
@@ -100,9 +115,11 @@
                 @foreach ($productos as $a)
                 <tr>
                     <td>{{$a->nombre_categoria}}</td>
+                    <td>{{$a->nombre_marca}}</td>
                     <td>{{$a->nombre}}</td>
                     <td>{{$a->codigo}}</td>
                     <td>{{$a->precio_venta}}</td>
+                    <td>{{$a->impuesto}}</td>
                     <td>{{$a->stock}}</td>
                     <td>{{$a->condicion?'Activo':'Desactivado'}}</td>
                 </tr>
@@ -112,6 +129,7 @@
     </div>
     <div class="izquierda">
         <p><strong>Total de registros: </strong>{{$cont}}</p>
+        <p><strong>Usuario: </strong>{{Auth::user()->usuario}}</p>
     </div>    
 </body>
 </html>

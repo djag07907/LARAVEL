@@ -15,7 +15,6 @@ class Compra extends Model
         'tipo_identificacion',
         'num_compra',
         'fecha_compra',
-        'impuesto',
         'total',
         'estado'
      ];

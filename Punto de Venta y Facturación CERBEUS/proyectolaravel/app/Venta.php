@@ -14,7 +14,8 @@ class Venta extends Model
         'tipo_identificacion',
         'num_venta',
         'fecha_venta',
-        'impuesto',
+        'impuesto15',
+        'impuesto18',
         'total',
         'estado'
     ];

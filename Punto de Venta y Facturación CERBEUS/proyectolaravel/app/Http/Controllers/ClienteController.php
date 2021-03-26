@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Cliente;
+use App\Exports\ClienteExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClienteController extends Controller
 {
@@ -84,5 +86,21 @@ class ClienteController extends Controller
         $cliente->direccion = $request->direccion;
         $cliente->save();
     }
+    public function listarPdf(){
+
+        $clientes = Cliente::select('clientes.nombre','clientes.tipo_documento','clientes.num_documento','clientes.direccion','clientes.telefono','clientes.email')
+            ->orderBy('clientes.nombre', 'desc')->get(); 
+
+
+            $cont=Cliente::count();
+
+            $pdf= \PDF::loadView('pdf.clientespdf',['clientes'=>$clientes,'cont'=>$cont]);
+            return $pdf->stream();
+            //return $pdf->download('productos.pdf');
+    }
+        public function listarExcel(){
+        return Excel::download(new CLienteExport, 'clientes.xlsx');
+     }
+
 
 }

@@ -16,15 +16,17 @@
                     <li @click="menu=2" class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-tasks"></i> Productos</a>
                     </li>
+
+                    <li @click="menu=4" class="nav-item">
+                        <a class="nav-link" href="#"><i class="fa fa-users"></i> Proveedores</a>
+                    </li>
                       
             
                     <li @click="menu=3" class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-shopping-cart"></i> Compras</a>
                     </li>
 
-                    <li @click="menu=4" class="nav-item">
-                        <a class="nav-link" href="#"><i class="fa fa-users"></i> Proveedores</a>
-                    </li>
+                    
             
                     
                 </ul>

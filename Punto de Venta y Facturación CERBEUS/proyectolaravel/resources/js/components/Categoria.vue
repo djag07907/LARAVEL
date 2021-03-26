@@ -10,9 +10,16 @@
                     <div class="card-header">
 
                        <h2>Listado de Categorías</h2><br/>
+                       
                       
-                        <button class="btn btn-primary btn-lg" type="button" @click="abrirModal('categoria','registrar')">
+                        <button type="button" class="btn btn-success btn-lg" @click="abrirModal('categoria','registrar')">
                             <i class="fa fa-plus fa-2x"></i>&nbsp;&nbsp;Agregar Categoría
+                        </button>
+                        <button class="btn btn-primary btn-lg" type="button" @click="cargarPdf();">
+                            <i class="fa fa-file-pdf-o fa-2x"></i>&nbsp;&nbsp;Reporte PDF
+                        </button>
+                        <button class="btn btn-primary btn-lg" type="button" @click="cargarExcel()">
+                            <i class="fa fa-file-excel-o fa-2x"></i>&nbsp;&nbsp;Reporte Excel
                         </button>
                     </div>
                     <div class="card-body">
@@ -125,15 +132,15 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Categoría</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-validate.initial="'required|alpha_spaces|min:2'" v-model="nombre" class="form-control" placeholder="Nombre de categoría" name="Nombre">
-                                        <span>{{ errors.first('Nombre') }}</span>
+                                        <input type="text" v-validate.initial="'required|alpha_spaces|min:2|max:50|'" maxlength="55" v-model="nombre" class="form-control" placeholder="Nombre de categoría" name="Nombre">
+                                        <span style="color:red">{{ errors.first('Nombre') }}</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="email-input">Descripción</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-validate.initial="'required|alpha_spaces'" v-model="descripcion" class="form-control" placeholder="Ingrese descripcion" name="Descripcion">
-                                        <span>{{ errors.first('Descripcion') }}</span>   
+                                        <input type="text" v-validate.initial="'required|alpha_spaces|min:2|max:50|'" maxlength="55" v-model="descripcion" class="form-control" placeholder="Ingrese descripcion" name="Descripcion">
+                                        <span style="color:red">{{ errors.first('Descripcion') }}</span>   
                                     </div>
                                 </div>
                             </form>  
@@ -255,6 +262,17 @@
                     console.log(error);
                 });
            },
+            cargarPdf(){
+               
+               window.open('http://127.0.0.1:8000/categoria/listarPdf','_blank');
+
+            },
+
+            cargarExcel(){
+               
+               window.open('http://127.0.0.1:8000/categoria/listarExcel','_blank');
+
+            },
 
            cambiarPagina(page,buscar,criterio){
               
@@ -288,15 +306,26 @@
                     //console.log(response);
                     me.cerrarModal();
                     me.listarCategoria(1,'','nombre');
+                    Swal.fire(
+                       '¡Exitoso!',
+                       'La categoría se ha creado con exito.',
+                       'success'
+                    )
 
                 }).catch(function (error) {
                     // handle error
+                    Swal.fire(
+                       '¡Opss!',
+                       'Parece que la categoría ya existe',
+                       'error'
+                    );
                     console.log(error);
                 });
 
            },
 
             actualizarCategoria(){
+                
 
                 if(this.validarCategoria()){
 
@@ -317,9 +346,19 @@
                     //console.log(response);
                     me.cerrarModal();
                     me.listarCategoria(1,'','nombre');
+                    Swal.fire(
+                       '¡Exitoso!',
+                       'La categoría se ha actualizado con exito.',
+                       'success'
+                    )
 
                 }).catch(function (error) {
                     // handle error
+                    Swal.fire(
+                       '¡Opss!',
+                       'Parece que la categoría ya existe',
+                       'error'
+                    );
                     console.log(error);
                 });
 
@@ -334,7 +373,7 @@
                 })
 
                 swalWithBootstrapButtons({
-                title: 'Estas seguro de desactivar la categoria?',
+                title: '¿Estas seguro de desactivar la categoría?',
                 //type: 'warning',
                 showCancelButton: true,
                 confirmButtonText: '<i class="fa fa-check fa-2x"></i> Aceptar',
@@ -433,14 +472,24 @@
 
             validarCategoria(){
 
-                 this.errorCategoria=0;
-                 this.errorMostrarMsjCategoria=[];
+                this.errorCategoria=0;
+                this.errorMostrarMsjCategoria=[];
 
-                 if(!this.nombre)  this.errorMostrarMsjCategoria.push("(*)El nombre de la categoria no puede estar vacio");
+                if(!this.nombre)   this.errorMostrarMsjCategoria.push("(*)El nombre de la categoria no puede estar vacio");
+                else if (!this.validInput(this.nombre))  this.errorMostrarMsjCategoria.push("(*)La descripcion de la categoria no tiene el formato correcto");
 
-                 if(this.errorMostrarMsjCategoria.length) this.errorCategoria=1;
+                if(!this.categoria)    this.errorMostrarMsjCategoria.push("(*)La descripcion de la categoria no puede estar vacia");
+                else if (!this.validInput(this.categoria))  this.errorMostrarMsjCategoria.push("(*)La descripcion de la categoria no tiene el formato correcto");
+
+                if(this.errorMostrarMsjCategoria.length) this.errorCategoria=1;
              
-                 return this.errorCategoria;
+                return this.errorCategoria;
+
+            },
+
+            validInput(input) {
+                var re = /^[a-zA-Z ]{2,50}/;
+                return re.test(input);
             },
 
            cerrarModal(){
@@ -467,7 +516,7 @@
                                 {
                                    
                                    this.modal=1;
-                                   this.tituloModal="Registrar Categoria";
+                                   this.tituloModal="Registrar Categoría";
                                    this.nombre="";
                                    this.descripcion="";
                                    this.tipoAccion=1;
@@ -480,7 +529,7 @@
                                 {
                                     //console.log(data);
                                     this.modal=1;
-                                    this.tituloModal="Editar Categoria";
+                                    this.tituloModal="Editar Categoría";
                                     this.tipoAccion=2;
                                     this.categoria_id=data["id"];
                                     this.nombre=data["nombre"];

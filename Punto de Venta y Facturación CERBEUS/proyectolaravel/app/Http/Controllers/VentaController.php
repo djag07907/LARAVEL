@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use App\Venta;
 use App\DetalleVenta;
 use App\User;
+use App\Exports\VentaReporteExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class VentaController extends Controller
 {
@@ -23,7 +25,7 @@ class VentaController extends Controller
             $ventas = Venta::join('clientes','ventas.idcliente','=','clientes.id')
             ->join('users','ventas.idusuario','=','users.id')
             ->select('ventas.id','ventas.tipo_identificacion',
-            'ventas.num_venta','ventas.fecha_venta','ventas.impuesto','ventas.total',
+            'ventas.num_venta','ventas.fecha_venta','ventas.impuesto15','ventas.impuesto18','ventas.total',
             'ventas.estado','clientes.nombre','users.usuario')
             ->orderBy('ventas.id', 'desc')->paginate(3);
         }
@@ -31,7 +33,7 @@ class VentaController extends Controller
             $ventas = Venta::join('clientes','ventas.idcliente','=','clientes.id')
             ->join('users','ventas.idusuario','=','users.id')
             ->select('ventas.id','ventas.tipo_identificacion',
-            'ventas.num_venta','ventas.fecha_venta','ventas.impuesto','ventas.total',
+            'ventas.num_venta','ventas.fecha_venta','ventas.impuesto15','ventas.impuesto18','ventas.total',
             'ventas.estado','clientes.nombre','users.usuario')
             ->where('ventas.'.$criterio, 'like', '%'. $buscar . '%')
             ->orderBy('ventas.id', 'desc')->paginate(3);
@@ -57,7 +59,7 @@ class VentaController extends Controller
         $venta = Venta::join('clientes','ventas.idcliente','=','clientes.id')
         ->join('users','ventas.idusuario','=','users.id')
         ->select('ventas.id','ventas.tipo_identificacion',
-        'ventas.num_venta','ventas.fecha_venta','ventas.impuesto','ventas.total',
+        'ventas.num_venta','ventas.fecha_venta','ventas.impuesto15','ventas.impuesto18','ventas.total',
         'ventas.estado','clientes.nombre','users.usuario')
         ->where('ventas.id','=',$id)
         ->orderBy('ventas.id', 'desc')->take(1)->get();
@@ -83,7 +85,7 @@ class VentaController extends Controller
         $venta = Venta::join('clientes','ventas.idcliente','=','clientes.id')
         ->join('users','ventas.idusuario','=','users.id')
         ->select('ventas.id','ventas.tipo_identificacion',
-        'ventas.num_venta','ventas.created_at','ventas.impuesto','ventas.total',
+        'ventas.num_venta','ventas.created_at','ventas.impuesto15','ventas.impuesto18','ventas.total',
         'ventas.estado','clientes.nombre','clientes.tipo_documento','clientes.num_documento',
         'clientes.direccion','clientes.email','clientes.telefono','users.usuario')
         ->where('ventas.id','=',$id)
@@ -98,7 +100,25 @@ class VentaController extends Controller
         $numventa=Venta::select('num_venta')->where('id',$id)->get();
         
         $pdf= \PDF::loadView('pdf.venta',['venta'=>$venta,'detalles'=>$detalles]);
-        return $pdf->download('venta-'.$numventa[0]->num_venta.'.pdf');
+        return $pdf->stream();
+        //return $pdf->download('venta-'.$numventa[0]->num_venta.'.pdf');
+    }
+
+    public function listarPdf(){
+        $ventas = Venta::join('clientes','ventas.idcliente','=','clientes.id')
+        ->join('users','ventas.idusuario','=','users.id')
+        ->select('ventas.fecha_venta','ventas.num_venta','ventas.idcliente','clientes.nombre as nombre_cliente','ventas.tipo_identificacion','ventas.idusuario','users.nombre as nombre_user','ventas.total','ventas.impuesto15','ventas.impuesto18')
+        ->orderBy('ventas.fecha_venta', 'desc')->get();
+
+        $cont = Venta::count();
+
+        $pdf= \PDF::loadView('pdf.ventareportepdf',['ventas'=>$ventas,'cont'=>$cont]);
+        return $pdf->stream();
+
+    }
+    
+    public function listarExcel(){
+        return Excel::download(new VentaReporteExport, 'Ventas.xlsx');
     }
 
     
@@ -118,7 +138,8 @@ class VentaController extends Controller
             $venta->tipo_identificacion = $request->tipo_identificacion;
             $venta->num_venta = $request->num_venta;
             $venta->fecha_venta = $mytime->toDateString();
-            $venta->impuesto = $request->impuesto;
+            $venta->impuesto15 = $request->impuesto15;
+            $venta->impuesto18 = $request->impuesto18;
             $venta->total = $request->total;
             $venta->estado = 'Registrado';
             $venta->save();
@@ -133,7 +154,7 @@ class VentaController extends Controller
                 $detalle->idproducto = $det['idproducto'];
                 $detalle->cantidad = $det['cantidad'];
                 $detalle->precio = $det['precio'];
-                $detalle->descuento = $det['descuento'];         
+                $detalle->descuento = $det['descuento'];  
                 $detalle->save();
             } 
             

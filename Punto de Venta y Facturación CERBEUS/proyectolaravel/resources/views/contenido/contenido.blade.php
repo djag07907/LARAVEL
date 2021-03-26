@@ -40,6 +40,14 @@
               <rol></rol>
             </template>
 
+            <template v-if="menu==9">
+              <marca></marca>
+            </template>
+
+            <template v-if="menu==10">
+              <precio_historico></precio_historico>
+            </template>
+
             @elseif (Auth::user()->idrol == 2)
             <template v-if="menu==0">
             <dashboard></dashboard>
@@ -60,6 +68,10 @@
             <template v-if="menu==6">
               <cliente></cliente>
             </template>
+
+            <template v-if="menu==9">
+              <marca></marca>
+            </template>
             @elseif (Auth::user()->idrol == 3)
             <template v-if="menu==0">
             <dashboard></dashboard>
@@ -79,6 +91,10 @@
 
             <template v-if="menu==4">
               <proveedor></proveedor>
+            </template>
+
+            <template v-if="menu==9">
+              <marca></marca>
             </template>
             @else
 

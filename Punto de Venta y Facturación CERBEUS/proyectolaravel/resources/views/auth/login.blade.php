@@ -1,5 +1,6 @@
 @extends('auth.contenido')
 
+
 @section('login')
 <div class="row justify-content-center">
       <div class="col-md-5">
@@ -7,8 +8,9 @@
           <div class="card p-4">
           <form class="form-horizontal was-validated" method="POST" action="{{ route('login')}}">
            {{ csrf_field() }}
+              
               <div class="card-body">
-              <h3 class="text-center bg-success">Compras - Ventas</h3>
+              <h3 class="text-center bg-success">LOGIN CERBEUS</h3>
              
               <div class="form-group mb-3{{$errors->has('usuario' ? 'is-invalid' : '')}}">
                 <span class="input-group-addon"><i class="icon-user"></i></span>

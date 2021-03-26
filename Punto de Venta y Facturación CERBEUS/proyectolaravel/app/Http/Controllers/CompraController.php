@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Compra;
 use App\DetalleCompra;
+use App\Exports\CompraReporteExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CompraController extends Controller
 {
@@ -22,7 +24,7 @@ class CompraController extends Controller
             $compras = Compra::join('proveedores','compras.idproveedor','=','proveedores.id')
             ->join('users','compras.idusuario','=','users.id')
             ->select('compras.id','compras.tipo_identificacion',
-            'compras.num_compra','compras.fecha_compra','compras.impuesto','compras.total',
+            'compras.num_compra','compras.fecha_compra','compras.total',
             'compras.estado','proveedores.nombre','users.usuario')
             ->orderBy('compras.id', 'desc')->paginate(3);
         }
@@ -30,7 +32,7 @@ class CompraController extends Controller
             $compras = Compra::join('proveedores','compras.idproveedor','=','proveedores.id')
             ->join('users','compras.idusuario','=','users.id')
             ->select('compras.id','compras.tipo_identificacion',
-            'compras.num_compra','compras.fecha_compra','compras.impuesto','compras.total',
+            'compras.num_compra','compras.fecha_compra','compras.total',
             'compras.estado','proveedores.nombre','users.usuario')
             ->where('compras.'.$criterio, 'like', '%'. $buscar . '%')->orderBy('compras.id', 'desc')->paginate(3);
         }
@@ -55,7 +57,7 @@ class CompraController extends Controller
         $compra = Compra::join('proveedores','compras.idproveedor','=','proveedores.id')
         ->join('users','compras.idusuario','=','users.id')
         ->select('compras.id','compras.tipo_identificacion',
-        'compras.num_compra','compras.fecha_compra','compras.impuesto','compras.total',
+        'compras.num_compra','compras.fecha_compra','compras.total',
         'compras.estado','proveedores.nombre','users.usuario')
         ->where('compras.id','=',$id)
         ->orderBy('compras.id', 'desc')->take(1)->get();
@@ -80,7 +82,7 @@ class CompraController extends Controller
         $compra = Compra::join('proveedores','compras.idproveedor','=','proveedores.id')
         ->join('users','compras.idusuario','=','users.id')
         ->select('compras.id','compras.tipo_identificacion',
-        'compras.num_compra','compras.created_at','compras.impuesto','compras.total',
+        'compras.num_compra','compras.created_at','compras.total',
         'compras.estado','proveedores.nombre','proveedores.tipo_documento','proveedores.num_documento',
         'proveedores.direccion','proveedores.email','proveedores.telefono','users.usuario')
         ->where('compras.id','=',$id)
@@ -95,8 +97,30 @@ class CompraController extends Controller
         $numcompra=Compra::select('num_compra')->where('id',$id)->get();
         
         $pdf= \PDF::loadView('pdf.compra',['compra'=>$compra,'detalles'=>$detalles]);
-        return $pdf->download('compra-'.$numcompra[0]->num_compra.'.pdf');
+        return $pdf->stream();
+        // return $pdf->download('compra-'.$numcompra[0]->num_compra.'.pdf');
     }
+
+    public function listarPdf(){
+
+        $compras = Compra::join('proveedores','compras.idproveedor','=','proveedores.id')
+        ->join('users','compras.idusuario','=','users.id')
+        ->select('compras.id','compras.tipo_identificacion',
+        'compras.num_compra','compras.total','proveedores.nombre','users.usuario','compras.estado')
+        ->orderBy('compras.id', 'desc')->get(); 
+
+
+            $cont = Compra::count();
+
+            $pdf= \PDF::loadView('pdf.comprareportepdf',['compras'=>$compras,'cont'=>$cont]);
+            return $pdf->stream();
+            //return $pdf->download('productos.pdf');
+    }
+    
+ 
+        public function listarExcel(){
+        return Excel::download(new CompraReporteExport, 'comprareporte.xlsx');
+     }
 
 
     
@@ -116,7 +140,7 @@ class CompraController extends Controller
             $compra->tipo_identificacion = $request->tipo_identificacion;
             $compra->num_compra = $request->num_compra;
             $compra->fecha_compra = $mytime->toDateString();
-            $compra->impuesto = $request->impuesto;
+            // $compra->impuesto = $request->impuesto;
             $compra->total = $request->total;
             $compra->estado = 'Registrado';
             $compra->save();

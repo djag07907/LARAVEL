@@ -40,7 +40,8 @@
         margin-left: 2%;
         margin-right: 2%;
         font-size: 20px;
-        background:#D2691E;
+        /* background:url('./logo/log.png'); */
+        background: #D2691E;
         }
  
         section{
@@ -103,21 +104,21 @@
     <body>
         @foreach ($venta as $v)
         <header>
-            <!--<div id="logo">
-                <img src="img/logo.png" alt="" id="imagen">
-            </div>-->
+        <div id="logo">
+                <img src="../resources/img/cerbeus_com.png" alt="" id="imagen" width="100" height="100">
+            </div> 
 
             <div>
                 
                 <table id="datos">
                     <thead>                        
                         <tr>
-                            <th id="">DATOS DEL VENDEDOR</th>
+                            <th id="">DATOS DEL COMPRADOR</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <th><p id="proveedor">Nombre: {{$v->nombre}}<br>
+                            <th><p id="cliente">Nombre: {{$v->nombre}}<br>
                             {{$v->tipo_identificacion}}-VENTA: {{$v->num_venta}}<br>
                             Dirección: {{$v->direccion}}<br>
                             Teléfono: {{$v->telefono}}<br>
@@ -154,9 +155,9 @@
                         <tr>
                             <td>{{$det->cantidad}}</td>
                             <td>{{$det->producto}}</td>
-                            <td>{{$det->precio}}</td>
-                            <td>{{$det->descuento}}</td>
-                            <td>{{$det->cantidad*$det->precio-$det->descuento}}</td>
+                            <td>{{number_format((float)$det->precio,2)}}</td>
+                            <td>{{number_format((float)$det->descuento, 2)}}</td>
+                            <td>{{number_format((float)$det->cantidad*$det->precio-$det->descuento, 2)}}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -166,22 +167,43 @@
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th>SUBTOTAL</th>
-                            <td>LPS {{round($v->total-($v->total*$v->impuesto),2)}}</td>
+                            <th></th>
+                            <td>&nbsp;</td>
                         </tr>
                         <tr>
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th>Impuesto</th>
-                            <td>LPS {{round($v->total*$v->impuesto,2)}}</td>
+                            <th></th>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>SUBTOTAL</th>
+                            <td>LPS {{number_format((float)round($v->total-$v->impuesto15-$v->impuesto18, 2),2)}}</td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>ISV(15%)</th>
+                            <td>LPS {{number_format((float)$v->impuesto15, 2)}}</td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>ISV(18%)</th>
+                            <td>LPS {{number_format((float)$v->impuesto18, 2)}}</td>
                         </tr>
                         <tr>
                             <th></th>
                             <th></th>
                             <th></th>
                             <th>TOTAL</th>
-                            <td>LPS {{$v->total}}</td>
+                            <td>LPS {{number_format((float)$v->total, 2)}}</td>
                         </tr>
                         @endforeach
                     </tfoot>
@@ -194,7 +216,7 @@
             <!--puedes poner un mensaje aqui-->
             <div id="datos">
                 <p id="encabezado">
-                    <b>Cerbeus-it.com</b><br>Eyter Higuera<br>Telefono:(+00)123456799<br>Email:webdeveloperphpwordpress@gmail.com
+                    <b>Cerbeus-Ingeniebrios.com</b><br>PUNTO DE VENTA Y FACTURACIÓN CERBEUS <br>Telefono:(+504)96271892<br>Email:cerbeus@gmail.com
                 </p>
             </div>
         </footer>

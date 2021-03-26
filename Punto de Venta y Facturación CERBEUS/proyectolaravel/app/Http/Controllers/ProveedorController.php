@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Proveedor;
+use App\Exports\ProveedorExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProveedorController extends Controller
 {
@@ -80,5 +82,21 @@ class ProveedorController extends Controller
         $proveedor->direccion = $request->direccion;
         $proveedor->save();
     }
+
+    public function listarPdf(){
+
+        $proveedores = Proveedor::select('proveedores.nombre','proveedores.tipo_documento','proveedores.num_documento','proveedores.direccion','proveedores.telefono','proveedores.email')
+            ->orderBy('proveedores.nombre', 'desc')->get(); 
+
+
+            $cont=Proveedor::count();
+
+            $pdf= \PDF::loadView('pdf.proveedorespdf',['proveedores'=>$proveedores,'cont'=>$cont]);
+            return $pdf->stream();
+            //return $pdf->download('productos.pdf');
+    }
+        public function listarExcel(){
+        return Excel::download(new ProveedorExport, 'proveedores.xlsx');
+     }
 
 }

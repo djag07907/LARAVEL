@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Exports\UserExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -170,4 +172,20 @@ class UserController extends Controller
         $user->condicion= '1';
         $user->save();
     }
+    public function listarPdf(){
+
+        $users = User::join('roles','users.idrol','=','roles.id')
+        ->select('users.nombre','users.tipo_documento','users.num_documento','users.direccion','users.telefono','users.email','users.idrol','roles.nombre as nombre_rol')
+        ->orderBy('users.nombre', 'desc')->get(); 
+
+
+        $cont=User::count();
+
+        $pdf= \PDF::loadView('pdf.userspdf',['users'=>$users,'cont'=>$cont]);
+        return $pdf->stream();
+        //return $pdf->download('productos.pdf');
+    }
+        public function listarExcel(){
+        return Excel::download(new UserExport, 'users.xlsx');
+     }
 }

@@ -11,11 +11,14 @@
 
                        <h2>Listado de Productos</h2><br/>
                       
-                        <button class="btn btn-primary btn-lg" type="button" @click="abrirModal('producto','registrar')">
+                        <button type="button" class="btn btn-success btn-lg" @click="abrirModal('producto','registrar')">
                             <i class="fa fa-plus fa-2x"></i>&nbsp;&nbsp;Agregar Producto
                         </button>
-                        <button type="button" class="btn btn-success btn-lg" @click="cargarPdf();">
-                            <i class="fa fa-file fa-2x"></i>&nbsp;&nbsp;Reporte PDF
+                        <button class="btn btn-primary btn-lg" type="button" @click="cargarPdf();">
+                            <i class="fa fa-file-pdf-o fa-2x"></i>&nbsp;&nbsp;Reporte PDF
+                        </button>
+                        <button class="btn btn-primary btn-lg" type="button" @click="cargarExcel()">
+                            <i class="fa fa-file-excel-o fa-2x"></i>&nbsp;&nbsp;Reporte Excel
                         </button>
                     </div>
                     <div class="card-body">
@@ -36,9 +39,11 @@
                                 <tr class="bg-primary">
                                    
                                     <th>Categoria</th>
+                                    <th>Marca</th>
                                     <th>Producto</th>
                                     <th>Codigo</th>
-                                    <th>Precio Venta (USD$)</th>
+                                    <th>Precio Venta (LPS)</th>
+                                    <th>Impuesto (ISV)</th>
                                     <th>Stock</th>
                                     <th>Imagen</th>
                                     <th>Estado</th>
@@ -51,9 +56,11 @@
                                 <tr v-for="producto in arrayProducto" :key="producto.id">
                                     
                                     <td v-text="producto.nombre_categoria"></td>
+                                    <td v-text="producto.nombre_marca"></td>
                                     <td v-text="producto.nombre"></td>
                                     <td v-text="producto.codigo"></td>
                                     <td v-text="producto.precio_venta"></td>
+                                    <td v-text="producto.impuesto"></td>
                                     <td v-text="producto.stock"></td>
 
                                     <td>
@@ -151,30 +158,55 @@
                                         <!--la variable idcategoria asociado a v-model la asignamos
                                         en la propiedad data en javascript (ver al final) -->
 
-                                        <select class="form-control" v-model="idcategoria">
+                                        <select class="form-control" v-model="idcategoria" v-validate.initial="'required|excluded:0'" name="categoría">
                                           
                                           <!-- el id y nombre asociado en el objeto categoria vienen de los campos
                                           de la tabla categorias de la bd-->
-                                          <option value="0" disabled>Seleccione</option>
+                                          <option value="0" disabled>Seleccione una Categoría</option>
                                           <!--el arrayCategoria es una variable de la data javascript de vue 
                                           y se cargan los registros de la categoria una vez se abra la ventana
                                           modal-->
                                           <option v-for="categoria in arrayCategoria" :key="categoria.id" :value="categoria.id" v-text="categoria.nombre"></option>
 
                                         </select>
-                                       
+                                        <span style="color:red">{{ errors.first('categoría') }}</span>
                                     </div>
                                 </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Marca</label>
+                                    <div class="col-md-9">
+                                        
+                                        <!--la variable idcategoria asociado a v-model la asignamos
+                                        en la propiedad data en javascript (ver al final) -->
+
+                                        <select class="form-control" v-model="idmarca" v-validate.initial="'required|excluded:0'" name="marca">
+                                          
+                                          <!-- el id y nombre asociado en el objeto categoria vienen de los campos
+                                          de la tabla categorias de la bd-->
+                                          <option value="0" disabled>Seleccione una Marca</option>
+                                          <!--el arrayCategoria es una variable de la data javascript de vue 
+                                          y se cargan los registros de la categoria una vez se abra la ventana
+                                          modal-->
+                                          <option v-for="marca in arrayMarca" :key="marca.id" :value="marca.id" v-text="marca.nombre"></option>
+
+                                        </select>
+                                        <span style="color:red">{{ errors.first('marca') }}</span>
+                                    </div>
+                                </div>
+                                
 
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Codigo</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="codigo" class="form-control" placeholder="Codigo de barras">
-                                        
+                                        <input type="text" v-validate.initial="'required|alpha_num'" v-model="codigo" class="form-control" placeholder="Codigo de barras" maxlength="20" name="Código de Barra">
+                                        <span style="color:red">{{ errors.first('Código de Barra')}}</span>
                                         <barcode :value="codigo" :options="{format:'EAN-13'}">
                                           Creando código de barras
                                         </barcode>
+                                        
+
 
                                     </div>
                                 </div>
@@ -183,22 +215,38 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Producto</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del producto" name="nombre">
+                                        <input type="text" v-validate.initial="'required|alpha_spaces|min:2|max:50'" maxlength="50" v-model="nombre" class="form-control" placeholder="Nombre del producto" name="Nombre">
+                                        <span style="color:red">{{ errors.first('Nombre')}}</span>
+                                        
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Precio Venta</label>
                                     <div class="col-md-9">
-                                        <input type="number" v-model="precio_venta" class="form-control" placeholder="">
-                                       
+                                        <input type="number" v-validate.initial="'required|decimal:2|min_value: 1'"  v-model="precio_venta" class="form-control" placeholder="" name="Precio">
+                                        <span style="color:red">{{ errors.first('Precio')}}</span>
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Impuesto</label>
+                                    <div class="col-md-9">
+                                        <select ref="documento" v-model="impuesto" class="form-control" v-validate.initial="'required|excluded:1'" name="Impuesto">
+                                            <option value="1" disabled>Seleccione el Impuesto</option>
+                                            <option value="0">EXCENTO DE IMPUESTO</option>
+                                            <option value="15">15%</option>
+                                            <option value="18">18%</option>
+                                        </select>
+                                        <span style="color:red">{{ errors.first('Impuesto') }}</span>                                    
+                                    </div>
+                                </div>
+                                
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Stock</label>
                                     <div class="col-md-9">
-                                        <input type="number" v-model="stock" class="form-control" placeholder="">
+                                        <input type="number" v-validate.initial="'required|numeric|min_value: 1'" v-model="stock" class="form-control" placeholder="" name="Numero">
+                                         <span style="color:red">{{ errors.first('Numero')}}</span>
                                        
                                     </div>
                                 </div>
@@ -212,7 +260,8 @@
                                        
 
                                         <div v-if="tipoAccion==1">
-                                            <input type="file" @change="subirImagen" class="form-control" placeholder="">
+                                            <input v-validate.initial="'required|image'" type="file" @change="subirImagen" class="form-control" placeholder="" name="Imagen del Producto">
+                                            <span style="color:red">{{ errors.first('Imagen del Producto')}}</span>
                                             <img :src="imagen" class="img-responsive" width="100px" height="100px">
                                         </div>
                                              
@@ -232,8 +281,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" @click="cerrarModal()" class="btn btn-danger"><i class="fa fa-times fa-2x"></i> Cerrar</button>
-                            <button type="button" @click="registrarProducto()" v-if="tipoAccion==1" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Guardar</button>
-                            <button type="button" @click="actualizarProducto()" v-if="tipoAccion==2" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Actualizar</button>
+                            <button type="button" :disabled="errors.any()" @click="registrarProducto()" v-if="tipoAccion==1" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Guardar</button>
+                            <button type="button" :disabled="errors.any()" @click="actualizarProducto()" v-if="tipoAccion==2" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Actualizar</button>
                            
                         </div>
                     </div>
@@ -248,7 +297,8 @@
 </template>
 
 <script>
-   
+
+   import { ValidationProvider } from 'vee-validate';
    import VueBarcode from 'vue-barcode';
    
     export default {
@@ -259,8 +309,11 @@
                 producto_id:0,
                 idcategoria:0,
                 nombre_categoria:'',
+                idmarca:0,
+                nombre_marca:'',
                 codigo:'',
                 nombre:'',
+                impuesto:1,
                 precio_venta:0,
                 stock:0,
                 imagen:'',
@@ -283,7 +336,10 @@
                 offset:3,
                 criterio:'nombre',
                 buscar:'',
-                arrayCategoria:[]
+                arrayCategoria:[],
+                arrayMarca:[]
+                
+                
             }
 
         },
@@ -360,6 +416,12 @@
 
             },
 
+            cargarExcel(){
+               
+               window.open('http://127.0.0.1:8000/producto/listarExcel','_blank');
+
+            },
+
            selectCategoria(){
                
                 let me=this;
@@ -379,6 +441,27 @@
                 });
 
            },
+
+           selectMarca(){
+               
+                let me=this;
+
+               var url= '/marca/selectMarca';
+
+               axios.get(url).then(function (response) {
+                    // handle success
+                    //console.log(response);
+                    var respuesta = response.data;
+                    me.arrayMarca=respuesta.marcas;
+                   
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                });
+
+           },
+
 
            cambiarPagina(page,buscar,criterio){
               
@@ -404,8 +487,10 @@
                axios.post('/producto/registrar',{
                  
                     "idcategoria":this.idcategoria,
+                    "idmarca":this.idmarca,
                      "codigo":this.codigo,
                      "nombre":this.nombre,
+                     "impuesto":this.impuesto,
                      "stock":this.stock,
                      "precio_venta":this.precio_venta,
                      "imagen":this.imagen
@@ -416,8 +501,19 @@
                     me.cerrarModal();
                     me.listarProducto(1,'','nombre');
 
+                    Swal.fire(
+                       '¡Exitoso!',
+                       'El producto se ha creado con exito.',
+                       'success'
+                    )
+
                 }).catch(function (error) {
                     // handle error
+                    Swal.fire(
+                       '¡Opss!',
+                       'Parece que el producto ya existe',
+                       'error'
+                    );
                     console.log(error);
                 });
 
@@ -454,8 +550,10 @@
                axios.put('/producto/actualizar',{
                  
                     "idcategoria":this.idcategoria,
+                    "idmarca":this.idmarca,
                      "codigo":this.codigo,
                      "nombre":this.nombre,
+                     "impuesto":this.impuesto,
                      "stock":this.stock,
                      "precio_venta":this.precio_venta,
                      "imagen":this.imagen,
@@ -468,7 +566,18 @@
                     me.cerrarModal();
                     me.listarProducto(1,'','nombre');
 
+                    Swal.fire(
+                       '¡Exitoso!',
+                       'El producto se ha actualizado con exito.',
+                       'success'
+                    )
+
                 }).catch(function (error) {
+                    Swal.fire(
+                       '¡Opss!',
+                       'Parece que el producto ya existe',
+                       'error'
+                    );
                     // handle error
                     console.log(error);
                 });
@@ -587,6 +696,7 @@
                  this.errorMostrarMsjProducto=[];
                  
                  if(this.idcategoria==0) this.errorMostrarMsjProducto.push("(*)Selecciona una categoria");
+                 if(this.idmarca==0) this.errorMostrarMsjProducto.push("(*)Selecciona una marca");
                  if(!this.nombre) this.errorMostrarMsjProducto.push("(*)El nombre del producto no puede estar vacio");
                  if(!this.precio_venta) this.errorMostrarMsjProducto.push("(*)El precio venta del producto debe ser un numero y no puede estar vacio");
                  if(!this.stock) this.errorMostrarMsjProducto.push("(*)El stock del producto debe ser un numero y no puede estar vacio");
@@ -603,8 +713,11 @@
                 this.tituloModal="";
                 this.idcategoria=0;
                 this.nombre_categoria="";
+                this.idmarca=0;
+                this.nombre_marca="";
                 this.codigo="";
                 this.nombre="";
+                this.impuesto=1;
                 this.precio_venta=0;
                 this.stock=0;
                 this.imagen="";
@@ -631,8 +744,11 @@
                                     this.tituloModal='Agregar Producto';
                                     this.idcategoria=0;
                                     this.nombre_categoria="";
+                                    this.idmarca=0;
+                                    this.nombre_marca="";
                                     this.codigo="";
                                     this.nombre="";
+                                    this.impuesto=1;
                                     this.precio_venta=0;
                                     this.stock=0;
                                     this.tipoAccion=1;
@@ -649,8 +765,10 @@
                                   this.tipoAccion=2;
                                   this.producto_id=data["id"];
                                   this.idcategoria=data["idcategoria"];
+                                  this.idmarca=data["idcategoria"];
                                   this.codigo=data["codigo"];
                                   this.nombre=data["nombre"];
+                                  this.impuesto=data["impuesto"];
                                   this.precio_venta=data["precio_venta"];
                                   this.stock=data["stock"];
                                   this.imagen=data["imagen"];
@@ -665,6 +783,7 @@
                 }
                
                this.selectCategoria();
+               this.selectMarca();
                         
            }
         

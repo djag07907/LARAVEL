@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Sistema Compras-Ventas con Laravel y Vue Js- Cerbeus-it.com">
     <meta name="keyword" content="Sistema Compras-Ventas con Laravel y Vue Js">
-    <title>PUNTO DE VENTA Y FACTURACIÓN Facturación CERBEUS</title>
+    <title>PUNTO DE VENTA Y FACTURACIÓN CERBEUS</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js">
     <!-- Icons -->

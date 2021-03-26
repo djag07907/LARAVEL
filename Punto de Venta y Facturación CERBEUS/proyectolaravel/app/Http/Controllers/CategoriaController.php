@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Categoria;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
+use App\Exports\CategoriaExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategoriaController extends Controller
 {
@@ -67,7 +71,6 @@ class CategoriaController extends Controller
      */
     public function store(Request $request)
     {
-        //
         if(!$request->ajax()) return redirect('/');
         $categoria= new Categoria();
         $categoria->nombre= $request->nombre;
@@ -112,6 +115,24 @@ class CategoriaController extends Controller
         $categoria->condicion= '1';
         $categoria->save();
     }
+
+    
+
+    public function listarPdf(){
+
+        $categorias = Categoria::select('categorias.nombre','categorias.descripcion','categorias.condicion')
+            ->orderBy('categorias.nombre', 'desc')->get(); 
+
+
+            $cont=Categoria::count();
+
+            $pdf= \PDF::loadView('pdf.categoriaspdf',['categorias'=>$categorias,'cont'=>$cont]);
+            return $pdf->stream();
+            //return $pdf->download('productos.pdf');
+    }
+        public function listarExcel(){
+        return Excel::download(new CategoriaExport, 'categorias.xlsx');
+     }
 
     
 }

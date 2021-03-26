@@ -40,7 +40,7 @@
         margin-left: 2%;
         margin-right: 2%;
         font-size: 20px;
-        background:#33AFFF;
+        background: #33AFFF;
         }
  
         section{
@@ -103,9 +103,9 @@
     <body>
         @foreach ($compra as $v)
         <header>
-            <!--<div id="logo">
-                <img src="img/logo.png" alt="" id="imagen">
-            </div>-->
+        <div id="logo">
+                <img src="../resources/img/cerbeus_com.png" alt="" id="imagen" width="100" height="100">
+            </div> 
          
              <div>
                 
@@ -183,15 +183,15 @@
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th>SUBTOTAL</th>
-                            <td>LPS {{round($v->total-($v->total*$v->impuesto),2)}}</td>
+                            <!-- <th>SUBTOTAL</th>
+                            <td>LPS {{round($v->total-($v->total*$v->impuesto),2)}}</td> -->
                         </tr>
                         <tr>
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th>Impuesto</th>
-                            <td>LPS {{round($v->total*$v->impuesto,2)}}</td>
+                            <!-- <th>Impuesto</th>
+                            <td>LPS {{round($v->total*$v->impuesto,2)}}</td> -->
                         </tr>
                         <tr>
                             <th></th>
@@ -211,7 +211,7 @@
              <!--puedes poner un mensaje aqui-->
              <div id="datos">
                 <p id="encabezado">
-                    <b>Cerbeus-it.com</b><br>Eyter Higuera<br>Telefono:(+00)123456799<br>Email:webdeveloperphpwordpress@gmail.com
+                <b>Cerbeus-Ingeniebrios.com</b><br>PUNTO DE VENTA Y FACTURACIÓN CERBEUS <br>Telefono:(+504)96271892<br>Email:cerbeus@gmail.com
                 </p>
             </div>
         </footer>

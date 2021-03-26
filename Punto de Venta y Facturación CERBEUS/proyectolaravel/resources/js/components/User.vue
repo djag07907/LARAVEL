@@ -11,8 +11,14 @@
 
                        <h2>Listado de Usuarios</h2><br/>
                       
-                        <button class="btn btn-primary btn-lg" type="button" @click="abrirModal('usuario','registrar')">
+                        <button  type="button" class="btn btn-success btn-lg" @click="abrirModal('usuario','registrar')">
                             <i class="fa fa-plus fa-2x"></i>&nbsp;&nbsp;Agregar Usuario
+                        </button>
+                        <button class="btn btn-primary btn-lg" type="button" @click="cargarPdf();">
+                            <i class="fa fa-file-pdf-o fa-2x"></i>&nbsp;&nbsp;Reporte PDF
+                        </button>
+                        <button class="btn btn-primary btn-lg" type="button" @click="cargarExcel()">
+                            <i class="fa fa-file-excel-o fa-2x"></i>&nbsp;&nbsp;Reporte Excel
                         </button>
                     </div>
                     <div class="card-body">
@@ -139,41 +145,47 @@
                                  <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Usuario (*)</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del usuario">                                        
+                                        <input type="text" v-validate.initial="'required|alpha_spaces|min:2|max:50'" v-model="nombre" class="form-control" placeholder="Nombre completo del usuario" name="Nombre Usuario">                                        
+                                        <span style="color:red">{{ errors.first('Nombre Usuario')}}</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo Documento</label>
                                     <div class="col-md-9">
-                                        <select v-model="tipo_documento" class="form-control">
-                                            <option value="DNI">DNI</option>
-                                            <option value="CEDULA">CEDULA</option>
-                                            <option value="PASS">PASS</option>
-                                        </select>                                    
+                                        <select v-model="tipo_documento" class="form-control" v-validate.initial="'required|excluded:0'" name="Tipo de Documento">
+                                            <option value="RTN">RTN</option>
+                                            <option value="IDENTIDAD">IDENTIDAD</option>
+                                            <option value="PASAPORTE">PASAPORTE</option>
+                                        </select>
+                                        <span style="color:red">{{ errors.first('Tipo de Documento') }}</span>                                    
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Número</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="num_documento" class="form-control" placeholder="Número de documento">                                        
+                                        <input type="text" v-validate.initial="'required|numeric'" maxlength="13" v-model="num_documento" class="form-control" placeholder="Número de documento" name="Número Celular">                                        
+                                        <span style="color:red">{{ errors.first('Número Celular')}}</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="email-input">Dirección</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
+                                        <input type="text" v-validate.initial="'required|'" maxlength="77" v-model="direccion" class="form-control" placeholder="Dirección" name="Dirección">
+                                         <span style="color:red">{{ errors.first('Dirección')}}</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="email-input">Teléfono</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono">
+                                        <input type="text" v-validate.initial="'required|numeric|digits:8'" maxlength="8" v-model="telefono" class="form-control" placeholder="Teléfono" name="Teléfono">
+                                         <span style="color:red">{{ errors.first('Teléfono')}}</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="email-input">Email</label>
                                     <div class="col-md-9">
-                                        <input type="email" v-model="email" class="form-control" placeholder="Email">
+                                        <input type="email" v-validate.initial="'required|email'" maxlength="25" v-model="email" class="form-control" placeholder="Email" name="Correo">
+                                         <span style="color:red">{{ errors.first('Correo')}}</span>
                                     </div>
                                 </div>
 
@@ -192,14 +204,16 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="email-input">Usuario (*)</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="usuario" class="form-control" placeholder="Nombre de usuario">
+                                        <input type="text" v-validate.initial="'required|alpha_spaces|min:8|max:15'" v-model="usuario" class="form-control" placeholder="Nombre de usuario" name="Usuario">
+                                         <span style="color:red">{{ errors.first('Usuario')}}</span>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="email-input">Password (*)</label>
                                     <div class="col-md-9">
-                                        <input type="password" v-model="password" class="form-control" placeholder="Password de acceso">
+                                        <input type="password" v-validate.initial="'required|'" v-model="password" class="form-control" placeholder="Password de acceso" name="Contraseña">
+                                         <span style="color:red">{{ errors.first('Contraseña')}}</span>
                                     </div>
                                 </div>
 
@@ -210,7 +224,8 @@
                                        <!--poniendo :src se llama a la variable imagen que esta declarada en la propiedad data-->
                                            <!--poner this.imagen=""; en cerrarModal para limpiar el campo ya que aparecia la imagen al registrar un registro-->
                                         <div v-if="tipoAccion==1">
-                                            <input type="file" @change="subirImagen" class="form-control" placeholder="">
+                                            <input v-validate.initial="'required|image'" type="file" @change="subirImagen" class="form-control" placeholder="" name="Imagen del Usuario">
+                                            <span style="color:red">{{ errors.first('Imagen del Usuario')}}</span>
                                             <img :src="imagen" class="img-responsive" width="100px" height="100px">
                                         </div>
                                              
@@ -222,9 +237,7 @@
                                                
                                        
                                     </div>
-                                </div>
-
-                                
+                                </div>                                
                                
 
                             </form>
@@ -255,7 +268,7 @@
                
                 usuario_id:0,
                 nombre : '',
-                tipo_documento : 'CEDULA',
+                tipo_documento : 0,
                 num_documento : '',
                 direccion : '',
                 telefono : '',
@@ -349,6 +362,17 @@
                     console.log(error);
                 });
            },
+            cargarPdf(){
+               
+               window.open('http://127.0.0.1:8000/user/listarPdf','_blank');
+
+            },
+
+            cargarExcel(){
+               
+               window.open('http://127.0.0.1:8000/user/listarExcel','_blank');
+
+            },
 
            selectRol(){
                
@@ -405,8 +429,21 @@
                     me.cerrarModal();
                     me.listarUsuario(1,'','nombre');
 
+                    Swal.fire(
+                       '¡Exitoso!',
+                       'El usuario se ha creado con exito.',
+                       'success'
+                    )
+
                 }).catch(function (error) {
                     // handle error
+
+                    Swal.fire(
+                       '¡Opss!',
+                       'Parece que el usuario ya existe',
+                       'error'
+                    );
+
                     console.log(error);
                 });
 
@@ -461,7 +498,18 @@
                     me.cerrarModal();
                     me.listarUsuario(1,'','nombre');
 
+                    Swal.fire(
+                       '¡Exitoso!',
+                       'El usuario se ha actualizado con exito.',
+                       'success'
+                    )
+
                 }).catch(function (error) {
+                    wal.fire(
+                       '¡Opss!',
+                       'Parece que el usuario ya existe',
+                       'error'
+                    );
                     // handle error
                     console.log(error);
                 });
@@ -489,7 +537,7 @@
                 this.modal=0;
                 this.tituloModal='';
                 this.nombre='';
-                this.tipo_documento='CEDULA';
+                this.tipo_documento=0;
                 this.num_documento='';
                 this.direccion='';
                 this.telefono='';
@@ -521,7 +569,7 @@
                                     this.modal = 1;
                                     this.tituloModal = 'Agregar Usuario';
                                     this.nombre= '';
-                                    this.tipo_documento='CEDULA';
+                                    this.tipo_documento=0;
                                     this.num_documento='';
                                     this.direccion='';
                                     this.telefono='';

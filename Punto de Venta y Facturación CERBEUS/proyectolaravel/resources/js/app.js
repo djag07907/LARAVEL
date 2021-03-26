@@ -28,6 +28,8 @@ import Vue from 'vue';
 import es from 'vee-validate/dist/locale/es';
 import VeeValidate, { Validator } from 'vee-validate';
 
+
+
 Vue.use(VeeValidate);
 
 Validator.localize("es", es);
@@ -35,7 +37,9 @@ Validator.localize("es", es);
 // Vue.use(ElementUI);
 
 Vue.component('categoria', require('./components/Categoria.vue'));
+Vue.component('marca', require('./components/Marca.vue'));
 Vue.component('producto', require('./components/Producto.vue'));
+Vue.component('precio_historico', require('./components/PrecioHistorico.vue'))
 Vue.component('proveedor', require('./components/Proveedor.vue'));
 Vue.component('cliente', require('./components/Cliente.vue'));
 Vue.component('rol', require('./components/Rol.vue'));

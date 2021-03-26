@@ -11,8 +11,14 @@
 
                        <h2>Listado de Proveedores</h2><br/>
                       
-                        <button class="btn btn-primary btn-lg" type="button" @click="abrirModal('proveedor','registrar')">
+                        <button  type="button" class="btn btn-success btn-lg" @click="abrirModal('proveedor','registrar')">
                             <i class="fa fa-plus fa-2x"></i>&nbsp;&nbsp;Agregar Proveedor
+                        </button>
+                        <button class="btn btn-primary btn-lg" type="button" @click="cargarPdf();">
+                            <i class="fa fa-file-pdf-o fa-2x"></i>&nbsp;&nbsp;Reporte PDF
+                        </button>
+                        <button class="btn btn-primary btn-lg" type="button" @click="cargarExcel()">
+                            <i class="fa fa-file-excel-o fa-2x"></i>&nbsp;&nbsp;Reporte Excel
                         </button>
                     </div>
                     <div class="card-body">
@@ -115,41 +121,51 @@
                                  <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proveedor (*)</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del proveedor">                                        
+                                        <input type="text" v-validate.initial="'required|alpha_spaces|min:2|max:50'" maxlength="50" v-model="nombre" class="form-control" placeholder="Nombre del proveedor" name="Nombre Proveedor">                                        
+                                        <span style="color:red">{{ errors.first('Nombre Proveedor')}}</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo Documento</label>
                                     <div class="col-md-9">
-                                        <select v-model="tipo_documento" class="form-control">
-                                            <option value="DNI">DNI</option>
-                                            <option value="CEDULA">CEDULA</option>
-                                            <option value="PASS">PASS</option>
-                                        </select>                                    
+                                        <select ref="documento" v-model="tipo_documento" class="form-control" v-validate.initial="'required|excluded:0'" name="Tipo de Documento">
+                                            <option value="0" disabled>Seleccione un Tipo de Documento</option>
+                                            <option value="RTN">RTN</option>
+                                            <option value="IDENTIDAD">IDENTIDAD</option>
+                                            <option value="PASAPORTE">PASAPORTE</option>
+                                        </select>
+                                        <span style="color:red">{{ errors.first('Tipo de Documento') }}</span>                                    
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Número</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="num_documento" class="form-control" placeholder="Número de documento">                                        
+                                        <input type="text" v-if="tipo_documento === 0" v-validate.initial="'required|numeric'" v-model="num_documento" maxlength="13" class="form-control" placeholder="Número de documento" name="Número de documento">
+                                        <input type="text" v-if="tipo_documento === 'RTN'" v-validate.initial="{ required: true, regex:/[0|1]{1}[\d]{13}/}" v-model="num_documento" maxlength="14" class="form-control" placeholder="Número de documento" name="Número de documento">
+                                        <input type="text" v-if="tipo_documento === 'IDENTIDAD'" v-validate.initial="{ required: true, regex:/[0|1]{1}[\d]{12}/}" v-model="num_documento" maxlength="13" class="form-control" placeholder="Número de documento" name="Número de documento">
+                                        <input type="text" v-if="tipo_documento === 'PASAPORTE'" v-validate.initial="'required|alpha_num'" v-model="num_documento" maxlength="20" class="form-control" placeholder="Número de documento" name="Número de documento">                                        
+                                        <span style="color:red">{{ errors.first('Número de documento')}}</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="email-input">Dirección</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
+                                        <input type="text" v-validate.initial="'required|alpha_spaces|min:10|max:75'" maxlength="70" v-model="direccion" class="form-control" placeholder="Dirección" name="Dirección">
+                                        <span style="color:red">{{ errors.first('Dirección')}}</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="email-input">Teléfono</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono">
+                                        <input type="text" v-validate.initial="{ required: true, regex:/[2|3|7|8|9]{1}[\d]{7}/}" v-model="telefono" class="form-control" placeholder="Teléfono" name="Teléfono">
+                                        <span style="color:red">{{ errors.first('Teléfono')}}</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="email-input">Email</label>
                                     <div class="col-md-9">
-                                        <input type="email" v-model="email" class="form-control" placeholder="Email">
+                                        <input type="email" v-validate.initial="'required|email'" maxlength="30" v-model="email" class="form-control" placeholder="Email" name="Correo">
+                                        <span style="color:red">{{ errors.first('Correo')}}</span>
                                     </div>
                                 </div>
                                
@@ -158,8 +174,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" @click="cerrarModal()" class="btn btn-danger"><i class="fa fa-times fa-2x"></i> Cerrar</button>
-                            <button type="button" @click="registrarProveedor()" v-if="tipoAccion==1" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Guardar</button>
-                            <button type="button" @click="actualizarProveedor()" v-if="tipoAccion==2" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Actualizar</button>
+                            <button type="button" :disabled="errors.any()" @click="registrarProveedor()" v-if="tipoAccion==1" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Guardar</button>
+                            <button type="button" :disabled="errors.any()" @click="actualizarProveedor()" v-if="tipoAccion==2" class="btn btn-success"><i class="fa fa-save fa-2x"></i> Actualizar</button>
                            
                         </div>
                     </div>
@@ -174,6 +190,7 @@
 </template>
 
 <script>
+    import { ValidationProvider } from 'vee-validate';
    
     export default {
         data(){
@@ -182,7 +199,7 @@
                
                 proveedor_id:0,
                 nombre : '',
-                tipo_documento : 'CEDULA',
+                tipo_documento:0,
                 num_documento : '',
                 direccion : '',
                 telefono : '',
@@ -271,6 +288,17 @@
                     console.log(error);
                 });
            },
+            cargarPdf(){
+               
+               window.open('http://127.0.0.1:8000/proveedor/listarPdf','_blank');
+
+            },
+
+            cargarExcel(){
+               
+               window.open('http://127.0.0.1:8000/proveedor/listarExcel','_blank');
+
+            },
 
            cambiarPagina(page,buscar,criterio){
               
@@ -309,8 +337,19 @@
                     me.cerrarModal();
                     me.listarProveedor(1,'','nombre');
 
+                    Swal.fire(
+                       '¡Exitoso!',
+                       'El proveedor se ha creado con exito.',
+                       'success'
+                    )
+
                 }).catch(function (error) {
                     // handle error
+                    Swal.fire(
+                       '¡Opss!',
+                       'Parece que el proveedor ya existe',
+                       'error'
+                    );
                     console.log(error);
                 });
 
@@ -342,7 +381,18 @@
                     me.cerrarModal();
                     me.listarProveedor(1,'','nombre');
 
+                    Swal.fire(
+                       '¡Exitoso!',
+                       'El proveedor se ha actualizado con exito.',
+                       'success'
+                    )
+
                 }).catch(function (error) {
+                     Swal.fire(
+                       '¡Opss!',
+                       'Parece que el proveedor ya existe',
+                       'error'
+                    );
                     // handle error
                     console.log(error);
                 });
@@ -355,6 +405,12 @@
                 this.errorMostrarMsjProveedor =[];
 
                 if (!this.nombre) this.errorMostrarMsjProveedor.push("(*)El nombre del proveedor no puede estar vacío.");
+                if (!this.num_documento) this.errorMostrarMsjProveedor.push("(*)El numero del documento del proveedor no puede estar vacío.");
+                if (!this.telefono) this.errorMostrarMsjProveedor.push("(*)El telefono del proveedor no puede estar vacío.");
+                if (!this.email) this.errorMostrarMsjProveedor.push("(*)El email del proveedor no puede estar vacío.");
+                if (!this.direccion) this.errorMostrarMsjProveedor.push("(*)La dirección del proveedor no puede estar vacío.");
+
+        
 
                 if (this.errorMostrarMsjProveedor.length) this.errorProveedor = 1;
 
@@ -366,7 +422,7 @@
                 this.modal=0;
                 this.tituloModal='';
                 this.nombre='';
-                this.tipo_documento='CEDULA';
+                this.tipo_documento=0;
                 this.num_documento='';
                 this.direccion='';
                 this.telefono='';
@@ -392,7 +448,7 @@
                                     this.modal = 1;
                                     this.tituloModal = 'Agregar Proveedor';
                                     this.nombre= '';
-                                    this.tipo_documento='CEDULA';
+                                    this.tipo_documento=0;
                                     this.num_documento='';
                                     this.direccion='';
                                     this.telefono='';

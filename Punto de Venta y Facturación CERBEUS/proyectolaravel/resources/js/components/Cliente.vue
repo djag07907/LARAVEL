@@ -11,8 +11,14 @@
 
                        <h2>Listado de Clientes</h2><br/>
                       
-                        <button class="btn btn-primary btn-lg" type="button" @click="abrirModal('cliente','registrar')">
+                        <button type="button" class="btn btn-success btn-lg" @click="abrirModal('cliente','registrar')">
                             <i class="fa fa-plus fa-2x"></i>&nbsp;&nbsp;Agregar Cliente
+                        </button>
+                        <button class="btn btn-primary btn-lg" type="button" @click="cargarPdf();">
+                            <i class="fa fa-file-pdf-o fa-2x"></i>&nbsp;&nbsp;Reporte PDF
+                        </button>
+                        <button class="btn btn-primary btn-lg" type="button" @click="cargarExcel()">
+                            <i class="fa fa-file-excel-o fa-2x"></i>&nbsp;&nbsp;Reporte Excel
                         </button>
                     </div>
                     <div class="card-body">
@@ -115,41 +121,51 @@
                                  <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Cliente (*)</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del cliente">                                        
+                                        <input type="text" v-validate.initial="'required|alpha_spaces|min:2|max:50'" maxlength="52" v-model="nombre" class="form-control" placeholder="Nombre del cliente" name="Nombre del Cliente">                                        
+                                        <span style="color:red">{{ errors.first('Nombre del Cliente')}}</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo Documento</label>
                                     <div class="col-md-9">
-                                        <select v-model="tipo_documento" class="form-control">
-                                            <option value="DNI">DNI</option>
-                                            <option value="CEDULA">CEDULA</option>
-                                            <option value="PASS">PASS</option>
-                                        </select>                                    
+                                        <select ref="documento" v-model="tipo_documento" class="form-control" v-validate.initial="'required|excluded:0'" name="Tipo de Documento">
+                                            <option value="0" disabled>Seleccione un Tipo de Documento</option>
+                                            <option value="RTN">RTN</option>
+                                            <option value="IDENTIDAD">IDENTIDAD</option>
+                                            <option value="PASAPORTE">PASAPORTE</option>
+                                        </select>
+                                        <span style="color:red">{{ errors.first('Tipo de Documento') }}</span>                                    
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Número</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="num_documento" class="form-control" placeholder="Número de documento">                                        
+                                        <input type="text" v-if="tipo_documento === 0" v-validate.initial="'required|numeric'" v-model="num_documento" maxlength="13" class="form-control" placeholder="Número de documento" name="Número de documento">
+                                        <input type="text" v-if="tipo_documento === 'RTN'" v-validate.initial="{ required: true, regex:/[0|1]{1}[\d]{13}/}" v-model="num_documento" maxlength="14" class="form-control" placeholder="Número de documento" name="Número de documento">
+                                        <input type="text" v-if="tipo_documento === 'IDENTIDAD'" v-validate.initial="{ required: true, regex:/[0|1]{1}[\d]{12}/}" v-model="num_documento" maxlength="13" class="form-control" placeholder="Número de documento" name="Número de documento">
+                                        <input type="text" v-if="tipo_documento === 'PASAPORTE'" v-validate.initial="'required|alpha_num'" v-model="num_documento" maxlength="20" class="form-control" placeholder="Número de documento" name="Número de documento">                                        
+                                        <span style="color:red">{{ errors.first('Número de documento')}}</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Dirección</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
+                                        <input type="text" v-validate.initial="'required|'" v-model="direccion" class="form-control" placeholder="Dirección" name="Dirección">
+                                        <span style="color:red">{{ errors.first('Dirección')}}</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Teléfono</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Teléfono</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono">
+                                        <input type="text" v-validate.initial="{ required: true, regex:/[2|3|7|8|9]{1}[\d]{7}/}" v-model="telefono" class="form-control" placeholder="Teléfono" name="Teléfono">
+                                        <span style="color:red">{{ errors.first('Teléfono')}}</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="email-input">Email</label>
                                     <div class="col-md-9">
-                                        <input type="email" v-model="email" class="form-control" placeholder="Email">
+                                        <input type="email" v-validate.initial="'required|email'" v-model="email" class="form-control" placeholder="Email" name="Correo">
+                                        <span style="color:red">{{ errors.first('Correo')}}</span>
                                     </div>
                                 </div>
                                
@@ -182,7 +198,7 @@
                
                 cliente_id:0,
                 nombre : '',
-                tipo_documento : 'CEDULA',
+                tipo_documento :0,
                 num_documento : '',
                 direccion : '',
                 telefono : '',
@@ -271,6 +287,17 @@
                     console.log(error);
                 });
            },
+            cargarPdf(){
+               
+               window.open('http://127.0.0.1:8000/cliente/listarPdf','_blank');
+
+            },
+
+            cargarExcel(){
+               
+               window.open('http://127.0.0.1:8000/cliente/listarExcel','_blank');
+
+            },
 
            cambiarPagina(page,buscar,criterio){
               
@@ -309,8 +336,19 @@
                     me.cerrarModal();
                     me.listarCliente(1,'','nombre');
 
+                    Swal.fire(
+                       '¡Exitoso!',
+                       'El cliente se ha creado con exito.',
+                       'success'
+                    )
+
                 }).catch(function (error) {
                     // handle error
+                    Swal.fire(
+                       '¡Opss!',
+                       'Parece que el cliente ya existe',
+                       'error'
+                    );
                     console.log(error);
                 });
 
@@ -342,7 +380,18 @@
                     me.cerrarModal();
                     me.listarCliente(1,'','nombre');
 
+                    Swal.fire(
+                       '¡Exitoso!',
+                       'El cliente se ha actualizado con exito.',
+                       'success'
+                    )
+
                 }).catch(function (error) {
+                     Swal.fire(
+                       '¡Opss!',
+                       'Parece que el cliente ya existe',
+                       'error'
+                    );
                     // handle error
                     console.log(error);
                 });
@@ -355,18 +404,25 @@
                 this.errorMostrarMsjCliente =[];
 
                 if (!this.nombre) this.errorMostrarMsjCliente.push("(*)El nombre del cliente no puede estar vacío.");
-
+                if (!this.tipo_documento) this.errorMostrarMsjCliente.push("(*)El tipo del documento del cliente no puede estar vacío.");
+                if (!this.num_documento) this.errorMostrarMsjCliente.push("(*)El numero del documento del cliente no puede estar vacío.");
+                if (!this.telefono) this.errorMostrarMsjCliente.push("(*)El telefono del cliente no puede estar vacío.");
+                if (!this.direccion) this.errorMostrarMsjCliente.push("(*)La direcciones del cliente no puede estar vacío.");
                 if (this.errorMostrarMsjCliente.length) this.errorCliente = 1;
 
                 return this.errorCliente;
             },
+            'num_documento' : this.num_documento,
+                    'telefono' : this.telefono,
+                    'email' : this.email,
+                    'direccion' : this.direccion,
 
            cerrarModal(){
 
                 this.modal=0;
                 this.tituloModal='';
                 this.nombre='';
-                this.tipo_documento='CEDULA';
+                this.tipo_documento=0;
                 this.num_documento='';
                 this.direccion='';
                 this.telefono='';
@@ -392,7 +448,7 @@
                                     this.modal = 1;
                                     this.tituloModal = 'Agregar Cliente';
                                     this.nombre= '';
-                                    this.tipo_documento='CEDULA';
+                                    this.tipo_documento=0;
                                     this.num_documento='';
                                     this.direccion='';
                                     this.telefono='';
